@@ -45,21 +45,28 @@ where tesseract
 tesseract --version
 ```
 
-If `tesseract` is not globally available, note the full path to `tesseract.exe` (example: `C:\Users\sathy\AppData\Local\Programs\Tesseract-OCR\tesseract.exe`).
+If `tesseract` is not globally available, set the `TESSERACT_CMD` environment variable to the full path of the binary (example: `C:\Users\sathy\AppData\Local\Programs\Tesseract-OCR\tesseract.exe`).
 
 ## Configure the app to find Tesseract
 
-There are two options:
+The app reads the `TESSERACT_CMD` environment variable at startup and uses that path for `pytesseract`. This avoids hardcoded platform-specific paths and is required for portable deployments (e.g., Streamlit Community Cloud).
 
-- Add the Tesseract install folder to your system `PATH` (recommended for convenience). Restart your terminal/IDE after updating PATH.
-- Or let the app point directly to the executable at runtime. `agent.py` already attempts to set `pytesseract.pytesseract.tesseract_cmd` to the user-local path `C:\Users\sathy\AppData\Local\Programs\Tesseract-OCR\tesseract.exe` if it exists.
+Examples:
 
-If you need to set it manually in code, add:
+- PowerShell (temporary for current session):
+	```powershell
+	$env:TESSERACT_CMD = 'C:\full\path\to\tesseract.exe'
+	```
+- PowerShell (persist across sessions):
+	```powershell
+	setx TESSERACT_CMD "C:\full\path\to\tesseract.exe"
+	```
+- Bash (temporary):
+	```bash
+	export TESSERACT_CMD=/usr/bin/tesseract
+	```
 
-```python
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r"C:\Users\sathy\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
-```
+On Streamlit Community Cloud set `TESSERACT_CMD` under App settings → Secrets & variables → Environment.
 
 ## Run the Streamlit app
 

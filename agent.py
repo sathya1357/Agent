@@ -3,19 +3,25 @@ import ollama
 import time
 from PIL import Image
 import pytesseract
+import os
 from pathlib import Path
 from db import init_db, save_message, load_messages, clear_messages
 
 # Initialize DB
 init_db()
 
-# Configure pytesseract to use the user-local Tesseract installation if present
-_tess_path = Path(r"C:\Users\sathy\AppData\Local\Programs\Tesseract-OCR\tesseract.exe")
-if _tess_path.exists():
-    pytesseract.pytesseract.tesseract_cmd = str(_tess_path)
+# Configure pytesseract via the `TESSERACT_CMD` environment variable only.
+# This avoids hardcoded platform-specific paths and is required for portable
+# deployments (e.g., Streamlit Community Cloud). Set `TESSERACT_CMD` to the
+# full path to `tesseract.exe` on Windows or the `tesseract` binary on Linux.
+_tess_env = os.environ.get("TESSERACT_CMD")
+if _tess_env:
+    _env_path = Path(_tess_env)
+    if _env_path.exists():
+        pytesseract.pytesseract.tesseract_cmd = str(_env_path)
 
 st.set_page_config(page_title="Chatbot", layout="wide")
-st.title("💬 My Personal Chatbot with OCR")
+st.title("💬CodeLens")
 
 # Load messages
 if "messages" not in st.session_state:
