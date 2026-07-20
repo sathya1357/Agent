@@ -1,3 +1,11 @@
 streamlit==1.59.2
 ollama==0.1.7
 requests==2.31.0
+from PIL import Image
+import pytesseract
+
+# If tesseract not on PATH, set the exe path:
+# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+img = Image.open("test.png")
+print(pytesseract.image_to_string(img))
